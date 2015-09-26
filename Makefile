@@ -19,9 +19,9 @@ DEPDIR=depends
 # "Machine-dependant" options
 #MFLAGS=-fPIC
 
-CFLAGS=-c -g -O3 -fPIC -Wall -Werror -Wsign-compare -Isrc -Ihtml
-LDFLAGS=-g -O3 -Wall -Werror 
-CC=gcc
+CFLAGS=-c -g -fPIC -Wall -Werror -Wsign-compare -Isrc -Ihtml -emit-llvm
+LDFLAGS=
+CC=llvm-gcc
 
 
 SUNDOWN_SRC=\
@@ -44,15 +44,15 @@ libsundown.so:	libsundown.so.1
 	ln -f -s $^ $@
 
 libsundown.so.1: $(SUNDOWN_SRC)
-	$(CC) $(LDFLAGS) -shared -Wl $^ -o $@
+	llvm-ld $(LDFLAGS) -shared -Wl $^ -o $@
 
 # executables
 
 sundown:	examples/sundown.o $(SUNDOWN_SRC)
-	$(CC) $(LDFLAGS) $^ -o $@
+	llvm-ld $(LDFLAGS) $^ -o $@
 
 smartypants: examples/smartypants.o $(SUNDOWN_SRC)
-	$(CC) $(LDFLAGS) $^ -o $@
+	llvm-ld $(LDFLAGS) $^ -o $@
 
 # perfect hashing
 html_blocks: src/html_blocks.h
